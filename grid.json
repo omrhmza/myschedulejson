@@ -1,48 +1,50 @@
 {
+  "updated": "2026-10-17",
+  "times": ["08:30-10:00", "10:10-11:40", "11:50-13:20", "13:20-14:30"],
   "first": {
     "1": {
-      "0": ["schedule test", "schedule test", "schedule test"],
-      "1": ["schedule test", "schedule test", "schedule test"],
-      "2": ["schedule test", "schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "0": ["Reading", "Writing", "Grammar"],
+      "1": ["General Education", "Phonetics", "Arabic"],
+      "2": ["Grammar", "Literature", "Speaking", "Speaking"],
+      "3": ["Reading", "Grammar", "Writing"],
+      "4": ["Methods", "Writing", "Listening"]
     },
     "2": {
-      "0": ["schedule test", "schedule test", "schedule test"],
-      "1": ["schedule test", "schedule test", "schedule test"],
-      "2": ["schedule test", "schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "0": ["Methods", "Phonetics", "Literature"],
+      "1": ["Literature", "Arabic", "General Education"],
+      "2": ["Methods", "Grammar", "Speaking", "Reading"],
+      "3": ["Methods", "Reading", "Speaking"],
+      "4": ["Listening", "Speaking", "Writing"]
     }
   },
   "second": {
     "1": {
-      "0": ["schedule test", "schedule test", "schedule test"],
+      "0": ["Speaking", "Reading", "Literature"],
       "1": ["Practical Education (Field Training)"],
-      "2": ["schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "2": ["Grammar", "Writing", "Listening"],
+      "3": ["Physiology", "Phonetics", "Literature"],
+      "4": ["Writing", "Grammar", "Reading"]
     },
     "2": {
-      "0": ["schedule test", "schedule test", "schedule test"],
+      "0": ["Listening", "Literature", "Reading"],
       "1": ["Practical Education (Field Training)"],
-      "2": ["schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "2": ["Writing", "Phonetics", "Literature"],
+      "3": ["Grammar", "Reading", "Speaking"],
+      "4": ["Physiology", "Writing", "Grammar"]
     },
     "3": {
-      "0": ["schedule test", "schedule test", "schedule test"],
+      "0": ["Grammar", "Reading", "Phonetics"],
       "1": ["Practical Education (Field Training)"],
-      "2": ["schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "2": ["Writing", "Listening", "Literature"],
+      "3": ["Speaking", "Reading", "Literature"],
+      "4": ["Grammar", "Physiology", "Writing"]
     },
     "4": {
-      "0": ["schedule test", "schedule test", "schedule test"],
+      "0": ["Literature", "Grammar", "Reading"],
       "1": ["Practical Education (Field Training)"],
-      "2": ["schedule test", "schedule test", "schedule test"],
-      "3": ["schedule test", "schedule test", "schedule test"],
-      "4": ["schedule test", "schedule test", "schedule test"]
+      "2": ["Listening", "Writing", "Phonetics"],
+      "3": ["Literature", "Speaking", "Reading"],
+      "4": ["Writing", "Grammar", "Physiology"]
     }
   }
 }
