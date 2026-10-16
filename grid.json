@@ -1,1 +1,48 @@
-# myschedulejson
+{
+  "first": {
+    "1": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["schedule test", "schedule test", "schedule test"],
+      "2": ["schedule test", "schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    },
+    "2": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["schedule test", "schedule test", "schedule test"],
+      "2": ["schedule test", "schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    }
+  },
+  "second": {
+    "1": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["Practical Education (Field Training)"],
+      "2": ["schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    },
+    "2": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["Practical Education (Field Training)"],
+      "2": ["schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    },
+    "3": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["Practical Education (Field Training)"],
+      "2": ["schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    },
+    "4": {
+      "0": ["schedule test", "schedule test", "schedule test"],
+      "1": ["Practical Education (Field Training)"],
+      "2": ["schedule test", "schedule test", "schedule test"],
+      "3": ["schedule test", "schedule test", "schedule test"],
+      "4": ["schedule test", "schedule test", "schedule test"]
+    }
+  }
+}
