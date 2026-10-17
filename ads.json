@@ -1,0 +1,24 @@
+{
+  "ads": [
+    {
+      "id": "shared-notice",
+      "years": ["second"],
+      "sections": [1],
+      "title": "تنبيه مهم",
+      "text": "نفس النص هنا.",
+      "icon": "📢",
+      "start": "2026-10-17",
+      "end": "2026-10-24"
+    },
+    {
+      "id": "shared-notice",
+      "years": ["first"],
+      "sections": [2],
+      "title": "تنبيه مهم",
+      "text": "نفس النص هنا.",
+      "icon": "📢",
+      "start": "2026-10-17",
+      "end": "2026-10-24"
+    }
+  ]
+}
