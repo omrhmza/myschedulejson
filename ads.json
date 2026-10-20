@@ -1,24 +1,13 @@
 {
   "ads": [
     {
-      "id": "shared-notice",
-      "years": ["second"],
-      "sections": [1],
-      "title": "تنبيه مهم",
-      "text": "نفس النص هنا.",
-      "icon": "📢",
-      "start": "2026-10-16",
-      "end": "2026-10-17"
-    },
-    {
-      "id": "shared-notice",
+      "id": "wednesday-fix-first-year",
       "years": ["first"],
-      "sections": [2],
-      "title": "تنبيه مهم",
-      "text": "نفس النص هنا.",
-      "icon": "📢",
-      "start": "2026-10-16",
-      "end": "2026-10-17"
+      "title": "تم تصحيح جدول يوم الأربعاء",
+      "text": "في جداول السنة الأولى بشعبتيها",
+      "icon": "🌼",
+      "start": "2026-10-20",
+      "end": "2026-10-21"
     }
   ]
 }
