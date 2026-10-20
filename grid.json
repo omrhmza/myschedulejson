@@ -5,7 +5,7 @@
     "1": {
       "0": ["Reading", "Writing", "Grammar"],
       "1": ["General Education", "Phonetics", "Arabic"],
-      "2": ["Grammar", "Literature", "Speaking", "Speaking"],
+      "2": ["Grammar", "Literature", "Literature", "Speaking"],
       "3": ["Methods", "Reading", "Speaking"],
       "4": ["Methods", "Writing", "Listening"]
     },
