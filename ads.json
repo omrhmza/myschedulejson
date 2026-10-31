@@ -22,7 +22,8 @@
       "href": "http://t.me/MySchedule12",
       "start": "2026-11-01",
       "end": "2026-11-03",
-      "priority": 20
+      "priority": 20,
+      "link": "http://t.me/MySchedule12"
     }
   ]
 }
