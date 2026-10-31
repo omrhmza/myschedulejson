@@ -2079,6 +2079,13 @@
     function saveSettings(year, section) {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ year, section })); } catch (e) {}
     }
+    function reportTarget() {
+      try {
+        if (window.AndroidSchedule && window.AndroidSchedule.setTarget && userSettings) {
+          window.AndroidSchedule.setTarget(String(userSettings.year), String(userSettings.section));
+        }
+      } catch (e) {}
+    }
     function getCurrentSchedule() {
       if (!userSettings) return {};
       return SCHEDULES[userSettings.year][userSettings.section] || {};
@@ -2751,6 +2758,7 @@
     function chooseSection(year, section) {
       saveSettings(year, section);
       userSettings = { year, section };
+      reportTarget();
       lastTodayKey = "";
       lastTomorrowKey = "";
       lastAdKey = "";
@@ -2870,6 +2878,7 @@
       const saved = loadSettings();
       if (saved) {
         userSettings = saved;
+        reportTarget();
         updateSectionBadges();
         updatePage();
         closeSetup();
