@@ -2,18 +2,13 @@
   "files": [
     {
       "name": "app.html",
-      "size": 110485,
-      "md5": "e5e88a0262e79c3789b11affaacdedd0"
+      "size": 110402,
+      "md5": "c2349b224b83ea6694f18d558c945270"
     },
     {
       "name": "font.ttf",
       "size": 248376,
       "md5": "0f8b29d5a2fc19313a435485939a5a5e"
-    },
-    {
-      "name": "hello.html",
-      "size": 1612,
-      "md5": "71854f0bef8f2dc16433873491dce0d7"
     }
   ]
 }
