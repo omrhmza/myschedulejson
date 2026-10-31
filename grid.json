@@ -1,50 +1,172 @@
 {
-  "updated": "2026-10-20",
-  "times": ["08:30-10:00", "10:10-11:40", "11:50-13:20", "13:20-14:30"],
+  "updated": "2026-10-31",
+  "times": [
+    "08:30-10:00",
+    "10:10-11:40",
+    "11:50-13:20",
+    "13:20-14:30"
+  ],
   "first": {
     "1": {
-      "0": ["Reading", "Writing", "Grammar"],
-      "1": ["General Education", "Phonetics", "Arabic"],
-      "2": ["Grammar", "Literature", "Literature", "Speaking"],
-      "3": ["Methods", "Reading", "Speaking"],
-      "4": ["Methods", "Writing", "Listening"]
+      "0": [
+        "Reading",
+        "Grammar",
+        "Speaking"
+      ],
+      "1": [
+        "Literature",
+        "Literature",
+        "Arabic"
+      ],
+      "2": [
+        "Methods",
+        "Writing",
+        "Phonetics",
+        "Speaking"
+      ],
+      "3": [
+        "Grammar",
+        "Listening",
+        "Methods"
+      ],
+      "4": [
+        "Reading",
+        "Writing",
+        "General Education"
+      ]
     },
     "2": {
-      "0": ["Methods", "Phonetics", "Literature"],
-      "1": ["Literature", "Arabic", "General Education"],
-      "2": ["Methods", "Grammar", "Speaking", "Reading"],
-      "3": ["Reading", "Grammar", "Writing"],
-      "4": ["Listening", "Speaking", "Writing"]
+      "0": [
+        "Methods",
+        "Literature",
+        "Grammar"
+      ],
+      "1": [
+        "Arabic",
+        "Phonetics",
+        "General Education"
+      ],
+      "2": [
+        "Listening",
+        "Methods",
+        "Writing",
+        "Reading"
+      ],
+      "3": [
+        "Reading",
+        "Speaking",
+        "Literature"
+      ],
+      "4": [
+        "Speaking",
+        "Grammar",
+        "Writing"
+      ]
+    },
+    "3": {
+      "0": [
+        "Methods",
+        "Literature",
+        "Listening"
+      ],
+      "1": [
+        "General Education",
+        "Arabic",
+        "Literature"
+      ],
+      "2": [
+        "Methods",
+        "Grammar",
+        "Reading",
+        "Phonetics"
+      ],
+      "3": [
+        "Writing",
+        "Speaking",
+        "Grammar"
+      ],
+      "4": [
+        "Speaking",
+        "Reading",
+        "Writing"
+      ]
     }
   },
   "second": {
     "1": {
-      "0": ["Speaking", "Reading", "Literature"],
-      "1": ["Practical Education (Field Training)"],
-      "2": ["Grammar", "Writing", "Listening"],
-      "3": ["Physiology", "Phonetics", "Literature"],
-      "4": ["Writing", "Grammar", "Reading"]
+      "0": [
+        "Listening",
+        "Reading",
+        "Literature"
+      ],
+      "1": [
+        "Practical Education (Field Training)"
+      ],
+      "2": [
+        "Writing",
+        "Literature",
+        "Phonetics"
+      ],
+      "3": [
+        "Reading",
+        "Grammar",
+        "Speaking"
+      ],
+      "4": [
+        "Educational Psychology",
+        "Writing",
+        "Grammar"
+      ]
     },
     "2": {
-      "0": ["Listening", "Literature", "Reading"],
-      "1": ["Practical Education (Field Training)"],
-      "2": ["Writing", "Phonetics", "Literature"],
-      "3": ["Grammar", "Reading", "Speaking"],
-      "4": ["Physiology", "Writing", "Grammar"]
+      "0": [
+        "Speaking",
+        "Listening",
+        "Reading"
+      ],
+      "1": [
+        "Practical Education (Field Training)"
+      ],
+      "2": [
+        "Grammar",
+        "Writing",
+        "Literature"
+      ],
+      "3": [
+        "Grammar",
+        "Literature",
+        "Phonetics"
+      ],
+      "4": [
+        "Writing",
+        "Reading",
+        "Educational Psychology"
+      ]
     },
     "3": {
-      "0": ["Grammar", "Reading", "Phonetics"],
-      "1": ["Practical Education (Field Training)"],
-      "2": ["Writing", "Listening", "Literature"],
-      "3": ["Speaking", "Reading", "Literature"],
-      "4": ["Grammar", "Physiology", "Writing"]
-    },
-    "4": {
-      "0": ["Literature", "Grammar", "Reading"],
-      "1": ["Practical Education (Field Training)"],
-      "2": ["Listening", "Writing", "Phonetics"],
-      "3": ["Literature", "Speaking", "Reading"],
-      "4": ["Writing", "Grammar", "Physiology"]
+      "0": [
+        "Writing",
+        "Reading",
+        "Literature"
+      ],
+      "1": [
+        "Practical Education (Field Training)"
+      ],
+      "2": [
+        "Writing",
+        "Phonetics",
+        "Reading"
+      ],
+      "3": [
+        "Speaking",
+        "Grammar",
+        "Literature"
+      ],
+      "4": [
+        "Grammar",
+        "Educational Psychology",
+        "Listening"
+      ]
     }
   }
 }
