@@ -1829,7 +1829,7 @@
 
     const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const dayLetters = ["S", "M", "T", "W", "T", "F", "S"];
-    const HTML_VERSION = "v1.213";
+    const HTML_VERSION = "v1.214";
     const STORAGE_KEY = "scheduleSettings";
 
     let userSettings = null;
@@ -2044,6 +2044,7 @@
       if (!ad) {
         el.hidden = true;
         el.removeAttribute("href");
+        el.onclick = null;
         el.dataset.adId = "";
         return;
       }
@@ -2055,8 +2056,16 @@
       document.getElementById("adTitle").textContent = ad.title ? String(ad.title) : "";
       document.getElementById("adText").textContent = ad.text ? String(ad.text) : "";
 
-      if (link) { el.setAttribute("href", link); el.classList.add("clickable"); }
-      else { el.removeAttribute("href"); el.classList.remove("clickable"); }
+      const openMode = ["inapp", "native", "browser"].includes(String(ad.open || "")) ? String(ad.open) : "";
+      if (link && openMode && window.AndroidSchedule && typeof window.AndroidSchedule.openLink === "function") {
+        el.removeAttribute("href");
+        el.classList.add("clickable");
+        el.onclick = function (e) { e.preventDefault(); window.AndroidSchedule.openLink(link, openMode); };
+      } else if (link) {
+        el.setAttribute("href", link); el.classList.add("clickable"); el.onclick = null;
+      } else {
+        el.removeAttribute("href"); el.classList.remove("clickable"); el.onclick = null;
+      }
 
       if (el.hidden || el.dataset.adId !== id) {
         el.hidden = false;
@@ -2875,9 +2884,28 @@
 
     attachTapFeedback(document.body, "#adBanner");
 
+    document.addEventListener("click", function (e) {
+      const a = e.target && e.target.closest ? e.target.closest("a[data-open]") : null;
+      if (!a) return;
+      const m = a.getAttribute("data-open");
+      if (!["inapp", "native", "browser"].includes(m)) return;
+      if (window.AndroidSchedule && typeof window.AndroidSchedule.openLink === "function") {
+        e.preventDefault();
+        window.AndroidSchedule.openLink(a.href, m);
+      }
+    });
+
     function boot() {
       const hv = document.getElementById("htmlVer");
-      if (hv) hv.textContent = "HTML " + HTML_VERSION;
+      if (hv) {
+        hv.textContent = "HTML " + HTML_VERSION;
+        try {
+          if (window.AndroidSchedule && typeof window.AndroidSchedule.getNativeVersion === "function") {
+            const nv = window.AndroidSchedule.getNativeVersion();
+            if (nv) hv.textContent += " • APP " + nv;
+          }
+        } catch (e) {}
+      }
       const saved = loadSettings();
       if (saved) {
         userSettings = saved;
