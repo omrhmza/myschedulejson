@@ -1829,7 +1829,7 @@
 
     const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const dayLetters = ["S", "M", "T", "W", "T", "F", "S"];
-    const HTML_VERSION = "v1.214";
+    const HTML_VERSION = "v1.215";
     const STORAGE_KEY = "scheduleSettings";
 
     let userSettings = null;
@@ -2894,6 +2894,36 @@
         window.AndroidSchedule.openLink(a.href, m);
       }
     });
+
+    /* ===== نافذة تحديث التطبيق — مرسومة بتصميم الصفحة وخطها (النيّتف يقرر، والصفحة ترسم) ===== */
+    window.__nativeUpdatePrompt = function (cfg) {
+      try {
+        if (document.getElementById("nativeUpdateOverlay")) return "ok";
+        const forced = !!(cfg && cfg.forced);
+        const url = cfg && cfg.url ? String(cfg.url) : "";
+        if (!url) return "no";
+        const msg = cfg && cfg.message ? String(cfg.message) : "يتوفر إصدار جديد من التطبيق. حدّث الآن للحصول على آخر التحسينات.";
+        const ov = document.createElement("div");
+        ov.id = "nativeUpdateOverlay";
+        ov.setAttribute("style", "position:fixed;inset:0;z-index:9999;background:rgba(12,6,1,.78);display:flex;align-items:center;justify-content:center;padding:24px;");
+        ov.innerHTML =
+          '<div style="width:100%;max-width:340px;background:linear-gradient(160deg,#2b1607,#170b02);border:1px solid rgba(240,125,30,.4);border-radius:24px;padding:30px 24px;text-align:center;color:#f6ead9;box-shadow:0 24px 60px rgba(0,0,0,.55);">' +
+          '<div style="font-size:38px;margin-bottom:10px;">' + (forced ? "⬆️" : "✨") + '</div>' +
+          '<div style="font-size:23px;font-weight:900;margin-bottom:10px;">' + (forced ? "تحديث مطلوب" : "إصدار جديد متوفر") + '</div>' +
+          '<div id="nuMsg" style="font-size:15px;line-height:1.9;color:#d9c3a5;margin-bottom:22px;"></div>' +
+          '<button id="nuUpdateBtn" style="display:block;width:100%;border:none;cursor:pointer;font-family:inherit;background:#f07d1e;color:#fff;font-size:17px;font-weight:800;padding:14px;border-radius:999px;box-shadow:0 10px 26px rgba(240,125,30,.35);">تحديث الآن</button>' +
+          (forced ? "" : '<button id="nuLaterBtn" style="display:block;width:100%;border:none;background:transparent;color:#d9c3a5;font-family:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer;">لاحقًا</button>') +
+          '</div>';
+        document.body.appendChild(ov);
+        document.getElementById("nuMsg").textContent = msg;
+        document.getElementById("nuUpdateBtn").addEventListener("click", function () {
+          if (window.AndroidSchedule && typeof window.AndroidSchedule.openLink === "function") window.AndroidSchedule.openLink(url, "browser");
+        });
+        const later = document.getElementById("nuLaterBtn");
+        if (later) later.addEventListener("click", function () { ov.remove(); });
+        return "ok";
+      } catch (e) { return "no"; }
+    };
 
     function boot() {
       const hv = document.getElementById("htmlVer");
