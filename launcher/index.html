@@ -124,6 +124,7 @@
 <div id="blackoutBox">
   <div style="font-size:44px">🔒</div>
   <button class="pill dim" id="emgBtn">طوارئ</button>
+  <button class="pill dim" id="exitBtn">خروج — الواجهة الأساسية</button>
 </div>
 
 <div id="pagerWrap">
@@ -626,6 +627,10 @@ function checkBlackout(){
 }
 checkBlackout();
 $('emgBtn').addEventListener('click', function(){ if(hasBot()) Bot.emergencyDial(); });
+$('exitBtn').addEventListener('click', function(){
+  if(hasBot() && Bot.exitToStock) Bot.exitToStock();
+  else toast('هالزر بيشتغل بعد تحديث التطبيق');
+});
 
 setInterval(function(){ tick(); checkBlackout(); }, 30000);
 goPage(0);
