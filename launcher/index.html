@@ -125,7 +125,6 @@
 <div id="blackoutBox">
   <div style="font-size:44px">🔒</div>
   <button class="pill dim" id="emgBtn">طوارئ</button>
-  <button class="pill dim" id="exitBtn">خروج — الواجهة الأساسية</button>
 </div>
 
 <div id="pagerWrap">
@@ -282,17 +281,30 @@ function setStage(kind, val){
 })();
 
 
-/* ===== بيانات سحابية (launcher.json) — تحديث بلا إعادة بناء ===== */
-fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
-  if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
-  if(j.day && j.day.text){
-    var seen = parseInt(ls('dayUpdated') || '0', 10);
-    if((j.day.updated || 0) >= seen){
-      $('dayCard').textContent = j.day.text;
-      ls('dayCard', j.day.text); ls('dayUpdated', String(j.day.updated || 0));
+/* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
+var PAGE_V = 3;
+function checkUpdate(){
+  fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
+    if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
+    if(j.config && j.config.blackout === true && window.__blackoutOff){ window.__blackoutOff = false; checkBlackout(); }
+    if(j.day && j.day.text){
+      var seen = parseInt(ls('dayUpdated') || '0', 10);
+      if((j.day.updated || 0) >= seen){
+        $('dayCard').textContent = j.day.text;
+        ls('dayCard', j.day.text); ls('dayUpdated', String(j.day.updated || 0));
+      }
     }
-  }
-}).catch(function(){});
+    if(j.pageVersion && j.pageVersion > PAGE_V){
+      try {
+        if(sessionStorage.getItem('rl') !== String(j.pageVersion)){
+          sessionStorage.setItem('rl', String(j.pageVersion));
+          location.reload();
+        }
+      } catch(e){ location.reload(); }
+    }
+  }).catch(function(){});
+}
+checkUpdate(); setInterval(checkUpdate, 15000);
 
 /* ================= classes ================= */
 function renderClasses(){
@@ -577,7 +589,7 @@ function pollChannel(){
     })
     .catch(function(){});
 }
-pollChannel(); setInterval(pollChannel, 20000);
+pollChannel(); setInterval(pollChannel, 5000);
 
 
 /* ================= الصلاة (حمص) ================= */
@@ -628,12 +640,8 @@ function checkBlackout(){
 }
 checkBlackout();
 $('emgBtn').addEventListener('click', function(){ if(hasBot()) Bot.emergencyDial(); });
-$('exitBtn').addEventListener('click', function(){
-  if(hasBot() && Bot.exitToStock) Bot.exitToStock();
-  else toast('هالزر بيشتغل بعد تحديث التطبيق');
-});
 
-setInterval(function(){ tick(); checkBlackout(); }, 30000);
+setInterval(function(){ tick(); checkBlackout(); }, 5000);
 goPage(0);
 </script>
 </body>
