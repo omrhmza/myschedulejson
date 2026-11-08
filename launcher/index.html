@@ -321,7 +321,7 @@ function setStageCaption(cap){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 11;
+var PAGE_V = 12;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -647,15 +647,10 @@ function handleChannelMessage(ev){
     var anm = ((ev.attachment.name || '') + ' ' + (ev.attachment.type || '')).toLowerCase();
     var isHtml = anm.indexOf('.htm') >= 0 || anm.indexOf('text/html') >= 0;
     if(isHtml){
-      if(hasBot()){
-        try { var loc2 = Bot.fetchToFile(url, 'stage'); var dd = loc2 ? Bot.readFileData(loc2) : '';
-          if(dd){ var b = dd.split('base64,')[1] || ''; var txt = b64ToText(b); if(txt){ setStage('html', txt, ev.title || ''); return; } }
-        } catch(e){}
-      } else {
-        fetch(url).then(function(r){ return r.text(); }).then(function(txt){ if(txt) setStage('html', txt, ev.title || ''); }).catch(function(){});
-        return;
-      }
-      setReply('وصل ملف HTML بس ما انعرض — ' + (ev.title || ''));
+      fetch(url).then(function(r){ return r.text(); }).then(function(txt){
+        if(txt) setStage('html', txt, ev.title || '');
+        else setReply('وصل ملف HTML بس ما انعرض — ' + (ev.title || ''));
+      }).catch(function(){ setReply('وصل ملف HTML بس ما انعرض — ' + (ev.title || '')); });
       return;
     }
     if(hasBot()){ try { var local = Bot.fetchToFile(url, 'stage'); if(local){ var d2 = Bot.readFileData(local); if(d2) url = d2; } } catch(e){} }
