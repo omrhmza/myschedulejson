@@ -446,11 +446,14 @@ var bookPage = parseInt(ls('bookPage') || '1', 10);
 var bookPages = parseInt(ls('bookPages') || '294', 10);
 var bookNight = ls('bookNight') === '1';
 function renderBook(){
-  var num = String(bookPage); while(num.length < 3) num = '0' + num;
   var img = $('bookImg');
-  img.src = 'file://' + BOOKS_DIR + '/' + bookId + '/pages/p-' + num + '.jpg';
+  if(hasBot()){
+    var d = '';
+    try { d = Bot.bookPageData(BOOKS_DIR, bookId, bookPage); } catch(e){}
+    if(d){ img.src = d; img.style.display = 'block'; }
+    else { img.removeAttribute('src'); img.style.display = 'none'; toast('الصفحة مو موجودة على الجوال'); }
+  }
   img.className = bookNight ? 'invert' : '';
-  img.id = 'bookImg';
   $('bookCount').textContent = ar(bookPage) + ' / ' + ar(bookPages);
 }
 $('bookNext').addEventListener('click', function(){ if(bookPage < bookPages){ bookPage++; ls('bookPage', String(bookPage)); renderBook(); } });
@@ -496,7 +499,7 @@ function handleChannelMessage(ev){
   }
   if(ev.attachment && ev.attachment.url){
     var url = ev.attachment.url;
-    if(hasBot()){ try { var local = Bot.fetchToFile(url, 'stage'); if(local) url = local; } catch(e){} }
+    if(hasBot()){ try { var local = Bot.fetchToFile(url, 'stage'); if(local){ var d2 = Bot.readFileData(local); if(d2) url = d2; } } catch(e){} }
     setStage('img', url);
     return;
   }
