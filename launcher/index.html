@@ -82,6 +82,10 @@
     filter:grayscale(1);
   }
   .slot .emo { font-size:26px; filter:grayscale(1); }
+  body.blackout #pagerWrap, body.blackout #dots, body.blackout #playerBar, body.blackout #msgRow, body.blackout #dock { display:none; }
+  #blackoutBox { display:none; flex:1; flex-direction:column; align-items:center; justify-content:center; gap:22px; }
+  body.blackout #blackoutBox { display:flex; }
+  #prayerLine { font-size:16px; color:#9a9a9a; margin-top:6px; min-height:20px; }
   /* ===== overlays ===== */
   .overlay {
     position:fixed; inset:0; background:#000; z-index:50; display:none;
@@ -111,7 +115,13 @@
 <div id="hdr">
   <div id="clock">--:--</div>
   <div id="dateLine"></div>
+  <div id="prayerLine"></div>
   <div><span id="lockBtn">🔒</span></div>
+</div>
+
+<div id="blackoutBox">
+  <div style="font-size:44px">🔒</div>
+  <button class="pill dim" id="emgBtn">طوارئ</button>
 </div>
 
 <div id="pagerWrap">
@@ -504,6 +514,8 @@ function runCmd(m){
     else toast('ما لقيت تطبيق: ' + (m.label || ''));
   } else if(m.action === 'set_alarm'){
     if(hasBot()){ Bot.setAlarm(m.hour || 0, m.minute || 0, m.label || ''); toast('انضبط منبه ' + ar(m.hour) + ':' + ar(String(m.minute).length < 2 ? '٠' + m.minute : m.minute)); }
+  } else if(m.action === 'guard_off'){
+    if(hasBot()){ Bot.setGuardOff(m.minutes || 30); toast('بوت رفع الحارس ' + ar(m.minutes || 30) + ' دقيقة'); }
   } else if(m.action === 'call'){
     if(hasBot() && m.number){ Bot.callNumber(m.number); toast('عم اتصل: ' + m.number); }
   }
@@ -552,6 +564,57 @@ function pollChannel(){
 }
 pollChannel(); setInterval(pollChannel, 20000);
 
+
+/* ================= الصلاة (حمص) ================= */
+var PRAYERS = [['الفجر','Fajr'],['الشروق','Sunrise'],['الظهر','Dhuhr'],['العصر','Asr'],['المغرب','Maghrib'],['العشاء','Isha']];
+function loadPrayer(){
+  var today = new Date().toDateString();
+  try {
+    var c = JSON.parse(ls('prayerCache') || 'null');
+    if(c && c.day === today){ renderPrayer(c.timings); return; }
+  } catch(e){}
+  fetch('https://api.aladhan.com/v1/timingsByCity?city=Homs&country=Syria&method=5')
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var t = j.data.timings;
+      ls('prayerCache', JSON.stringify({ day: today, timings: t }));
+      renderPrayer(t);
+    })
+    .catch(function(){
+      try { var c2 = JSON.parse(ls('prayerCache') || 'null'); if(c2) renderPrayer(c2.timings); } catch(e){}
+    });
+}
+function renderPrayer(t){
+  if(!t) return;
+  var now = new Date();
+  for(var i = 0; i < PRAYERS.length; i++){
+    var parts = (t[PRAYERS[i][1]] || '').split(' ')[0].split(':');
+    if(parts.length < 2) continue;
+    var d = new Date(); d.setHours(parseInt(parts[0], 10), parseInt(parts[1], 10), 0, 0);
+    if(d > now){
+      var mins = Math.round((d - now) / 60000);
+      var hh = Math.floor(mins / 60), mm = mins % 60;
+      var left = hh > 0 ? ('بعد ' + ar(hh) + ' س و' + ar(mm) + ' د') : ('بعد ' + ar(mm) + ' دقيقة');
+      $('prayerLine').textContent = PRAYERS[i][0] + ' ' + ar(parseInt(parts[0],10) % 12 === 0 ? 12 : parseInt(parts[0],10) % 12) + ':' + ar(parts[1].length < 2 ? '٠' + parts[1] : parts[1]) + ' — ' + left;
+      return;
+    }
+  }
+  $('prayerLine').textContent = 'الفجر غدًا بإذن الله';
+}
+loadPrayer();
+
+/* ================= الحظر الليلي ١٢–٦ ================= */
+function checkBlackout(){
+  var h = new Date().getHours();
+  var on = (h >= 0 && h < 6);
+  var was = document.body.classList.contains('blackout');
+  document.body.classList.toggle('blackout', on);
+  if(on && !was) toast('وضع الليل: الهاتف مقفل لحد ٦ الصبح — طوارئ بس');
+}
+checkBlackout();
+$('emgBtn').addEventListener('click', function(){ if(hasBot()) Bot.emergencyDial(); });
+
+setInterval(function(){ tick(); checkBlackout(); }, 30000);
 goPage(0);
 </script>
 </body>
