@@ -262,27 +262,34 @@ $('pagerWrap').addEventListener('touchend', function(e){
 }, {passive:true});
 
 /* ================= stage / day ================= */
-function setStage(kind, val){
-  ls('stage', JSON.stringify({kind:kind, val:val}));
+var stageImgAt = 0;
+function setStage(kind, val, cap){
+  ls('stage', JSON.stringify({kind:kind, val:val, cap:cap || ''}));
   var box = $('stageBox');
   if(kind === 'img'){
-    box.innerHTML = '<img src="' + val + '">';
+    stageImgAt = Date.now();
+    box.innerHTML = '<img src="' + val + '"><div class="stageText" id="stageCap" style="font-size:16px"></div>';
+    if(cap) $('stageCap').textContent = cap;
   } else {
     box.innerHTML = '<div class="stageText"></div>';
     box.firstChild.textContent = val;
   }
 }
+function setStageCaption(cap){
+  var c = $('stageCap');
+  if(c){ c.textContent = cap; try { var s = JSON.parse(ls('stage') || '{}'); s.cap = cap; ls('stage', JSON.stringify(s)); } catch(e){} }
+}
 (function(){
   try {
     var s = JSON.parse(ls('stage') || 'null');
-    if(s) setStage(s.kind, s.val);
+    if(s) setStage(s.kind, s.val, s.cap);
   } catch(e){}
   var day = ls('dayCard'); if(day) $('dayCard').textContent = day;
 })();
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 4;
+var PAGE_V = 5;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -569,10 +576,14 @@ function handleChannelMessage(ev){
   if(ev.attachment && ev.attachment.url){
     var url = ev.attachment.url;
     if(hasBot()){ try { var local = Bot.fetchToFile(url, 'stage'); if(local){ var d2 = Bot.readFileData(local); if(d2) url = d2; } } catch(e){} }
-    setStage('img', url);
+    setStage('img', url, ev.title || '');
     return;
   }
-  if(m) setStage('text', m);
+  if(m){
+    var cur = null; try { cur = JSON.parse(ls('stage') || 'null'); } catch(e){}
+    if(cur && cur.kind === 'img' && (Date.now() - stageImgAt) < 30000) setStageCaption(m);
+    else setStage('text', m);
+  }
 }
 function pollChannel(){
   var last = ls('ntfyLast') || '12h';
