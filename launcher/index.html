@@ -49,7 +49,7 @@
   .dayName { font-size:16px; color:#9a9a9a; margin:14px 2px 8px 2px; }
   .cardText { font-size:20px; line-height:2; white-space:pre-wrap; padding:6px 4px; }
   /* ===== dots ===== */
-  #dots { display:flex; gap:8px; justify-content:center; padding:8px 0 2px 0; }
+  #dots { display:flex; gap:8px; justify-content:center; padding:8px 0 2px 0; direction:ltr; }
   #dots span { width:7px; height:7px; border-radius:50%; background:#2a2a2a; }
   #dots span.on { background:#f5f5f5; }
   /* ===== book ===== */
@@ -293,7 +293,7 @@ function setStageCaption(cap){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 7;
+var PAGE_V = 8;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -361,6 +361,7 @@ setInterval(renderClasses, 30000);
 
 function glyphFor(a){
   var p = (a.pkg || '').toLowerCase(), l = a.label || '', ll = l.toLowerCase();
+  if(p.indexOf('muse') >= 0 || ll === 'muse' || ll.indexOf('muse ') >= 0) return '✨';
   if(p.indexOf('whatsapp') >= 0) return '💬';
   if(p.indexOf('camera') >= 0 || ll.indexOf('camera') >= 0) return '📷';
   if(p.indexOf('readera') >= 0 || ll.indexOf('readera') >= 0 || ll.indexOf('reader') >= 0) return '📖';
