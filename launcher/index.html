@@ -293,7 +293,7 @@ function setStageCaption(cap){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 6;
+var PAGE_V = 7;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -359,6 +359,17 @@ function renderClasses(){
 }
 setInterval(renderClasses, 30000);
 
+function glyphFor(a){
+  var p = (a.pkg || '').toLowerCase(), l = a.label || '', ll = l.toLowerCase();
+  if(p.indexOf('whatsapp') >= 0) return '💬';
+  if(p.indexOf('camera') >= 0 || ll.indexOf('camera') >= 0) return '📷';
+  if(p.indexOf('readera') >= 0 || ll.indexOf('readera') >= 0 || ll.indexOf('reader') >= 0) return '📖';
+  if(p.indexOf('dialer') >= 0 || p.indexOf('phone') >= 0 || p.indexOf('contacts') >= 0 || ll.indexOf('phone') >= 0 || l.indexOf('هاتف') >= 0) return '📞';
+  if(p.indexOf('settings') >= 0) return '⚙️';
+  if(p.indexOf('music') >= 0 || ll.indexOf('music') >= 0 || l.indexOf('موسيقى') >= 0) return '🎵';
+  return null;
+}
+
 /* ================= dock ================= */
 var dockApps = [];
 try { dockApps = JSON.parse(ls('dock') || '[]'); } catch(e){}
@@ -368,11 +379,8 @@ function renderDock(){
   dockApps.forEach(function(a, i){
     var d = document.createElement('div'); d.className = 'slot';
     if(a){
-      var key = (a.pkg.indexOf('whatsapp') >= 0) ? 'whatsapp'
-              : (a.pkg.indexOf('camera') >= 0) ? 'camera'
-              : (a.pkg.indexOf('dialer') >= 0 || a.pkg.indexOf('phone') >= 0 || a.pkg.indexOf('contacts') >= 0) ? 'phone'
-              : (a.pkg.indexOf('settings') >= 0) ? 'settings' : null;
-      d.innerHTML = key ? '<div class="emo">' + EMO[key] + '</div>'
+      var emo = glyphFor(a);
+      d.innerHTML = emo ? '<div class="emo">' + emo + '</div>'
                         : '<div class="mono">' + (a.label || '?').charAt(0) + '</div>';
     } else {
       d.innerHTML = '<div class="mono" style="color:#555">+</div>';
