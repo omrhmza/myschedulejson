@@ -480,11 +480,41 @@ function sendMsg(){
   $('msgInput').value = '';
   postIn(v).then(function(){ toast('انبعتت لبوت'); });
 }
+
+/* ================= أوامر بوت (من القناة) ================= */
+var APP_ALIASES = {'انستغرام':'Instagram','إنستغرام':'Instagram','انستا':'Instagram','واتساب':'WhatsApp','الكاميرا':'Camera','المعرض':'Gallery','يوتيوب':'YouTube','الهاتف':'Phone','الاتصال':'Phone','المكالمات':'Phone','المنبه':'Clock','الساعة':'Clock','الإعدادات':'Settings','الملفات':'Files','كروم':'Chrome','المتصفح':'Chrome','تيليغرام':'Telegram','فيسبوك':'Facebook','الماسنجر':'Messenger','الخرائط':'Maps','المتجر':'Play Store','جوجل بلاي':'Play Store','الآلة الحاسبة':'Calculator','الحاسبة':'Calculator','التقويم':'Calendar','الرسائل':'Messages'};
+function normName(x){ return (x || '').toLowerCase().replace(/[ً-ٰٟ]/g, '').replace(/\s+/g, ''); }
+function resolveApp(label, labelEn){
+  if(!hasBot()) return null;
+  var list = [];
+  try { list = JSON.parse(Bot.listApps()); } catch(e){}
+  var cands = [labelEn, APP_ALIASES[label], label];
+  for(var c = 0; c < cands.length; c++){
+    if(!cands[c]) continue;
+    var want = normName(cands[c]);
+    for(var i = 0; i < list.length; i++) if(normName(list[i].label) === want) return list[i];
+    for(var j = 0; j < list.length; j++) if(normName(list[j].label).indexOf(want) >= 0 || want.indexOf(normName(list[j].label)) >= 0) return list[j];
+  }
+  return null;
+}
+function runCmd(m){
+  if(m.action === 'open_app'){
+    var a = resolveApp(m.label, m.label_en);
+    if(a){ toast('بوت عم يفتح: ' + a.label); Bot.openApp(a.pkg); }
+    else toast('ما لقيت تطبيق: ' + (m.label || ''));
+  } else if(m.action === 'set_alarm'){
+    if(hasBot()){ Bot.setAlarm(m.hour || 0, m.minute || 0, m.label || ''); toast('انضبط منبه ' + ar(m.hour) + ':' + ar(String(m.minute).length < 2 ? '٠' + m.minute : m.minute)); }
+  } else if(m.action === 'call'){
+    if(hasBot() && m.number){ Bot.callNumber(m.number); toast('عم اتصل: ' + m.number); }
+  }
+}
+
 function handleChannelMessage(ev){
   var m = ev.message || '';
   var parsed = null;
   try { parsed = JSON.parse(m); } catch(e){}
   if(parsed && parsed.type === 'gate'){ gateDecision(parsed); return; }
+  if(parsed && parsed.type === 'cmd'){ runCmd(parsed); return; }
   if(parsed && parsed.type === 'open_book'){
     bookId = parsed.book; bookPage = parsed.page;
     if(parsed.pages) bookPages = parsed.pages;
