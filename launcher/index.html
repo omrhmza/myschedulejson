@@ -321,7 +321,7 @@ function setStageCaption(cap){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 10;
+var PAGE_V = 11;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -335,8 +335,9 @@ function checkUpdate(){
     }
     if(j.pageVersion && j.pageVersion > PAGE_V){
       try {
-        if(sessionStorage.getItem('rl') !== String(j.pageVersion)){
-          sessionStorage.setItem('rl', String(j.pageVersion));
+        var lastRl = parseInt(sessionStorage.getItem('rlT') || '0', 10);
+        if(Date.now() - lastRl > 60000){
+          sessionStorage.setItem('rlT', String(Date.now()));
           location.reload();
         }
       } catch(e){ location.reload(); }
