@@ -43,6 +43,9 @@
   }
   .row .sub { color:#9a9a9a; font-size:15px; margin-inline-start:auto; }
   .row.today { border-color:#3a3a3a; }
+  .row.now { border-color:#f5f5f5; }
+  .nextBox { border:1px solid #2c2c2c; border-radius:16px; padding:18px 16px; margin-bottom:14px; font-size:22px; line-height:1.7; text-align:center; }
+  .nextBox .sub { color:#9a9a9a; font-size:17px; }
   .dayName { font-size:16px; color:#9a9a9a; margin:14px 2px 8px 2px; }
   .cardText { font-size:20px; line-height:2; white-space:pre-wrap; padding:6px 4px; }
   /* ===== dots ===== */
@@ -208,12 +211,13 @@ var NTFY_OUT = 'https://ntfy.envs.net/bot2omar-1xgs36l2jzx2cohxe52';
 var MUSIC_DIR = '/sdcard/Music/BotList';
 var BOOKS_DIR = '/sdcard/Books';
 /* جدول الحصص الأسبوعي — الترتيب من بوت؛ عدّل الأوقات هنا متى عرفتها */
+var PERIODS = [[510,600],[610,700],[710,800]];
 var SCHEDULE = {
-  0: { day:'الأحد',    items:[['Writing','٨:٣٠ صباحًا'],['Reading',''],['Literature','']] },
-  1: { day:'الاثنين',  items:[['Practical Education','']] },
-  2: { day:'الثلاثاء', items:[['Writing',''],['Phonetics',''],['Reading','']] },
-  3: { day:'الأربعاء', items:[['Speaking',''],['Grammar',''],['Literature','']] },
-  4: { day:'الخميس',   items:[['Grammar',''],['Educational Psychology',''],['Listening','']] },
+  0: { day:'الأحد',    items:['Writing','Reading','Literature'] },
+  1: { day:'الاثنين',  items:['Practical Education'] },
+  2: { day:'الثلاثاء', items:['Writing','Phonetics','Reading'] },
+  3: { day:'الأربعاء', items:['Speaking','Grammar','Literature'] },
+  4: { day:'الخميس',   items:['Grammar','Educational Psychology','Listening'] },
   5: { day:'الجمعة',   items:[] },
   6: { day:'السبت',    items:[] }
 };
@@ -289,7 +293,7 @@ function setStageCaption(cap){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 5;
+var PAGE_V = 6;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -314,19 +318,46 @@ function checkUpdate(){
 checkUpdate(); setInterval(checkUpdate, 15000);
 
 /* ================= classes ================= */
+function fmtTime(mins){
+  var h = Math.floor(mins/60), m = mins % 60;
+  var suf = h < 12 ? 'صباحًا' : 'ظهرًا';
+  var h12 = h % 12; if(h12 === 0) h12 = 12;
+  return ar(h12) + ':' + ar(m < 10 ? '0' + m : m) + ' ' + suf;
+}
+function fmtDur(mins){
+  if(mins <= 0) return 'هلق';
+  var h = Math.floor(mins/60), m = mins % 60, parts = [];
+  if(h > 0) parts.push(h === 1 ? 'ساعة' : h === 2 ? 'ساعتين' : ar(h) + ' ساعات');
+  if(m > 0) parts.push(ar(m) + (m === 1 ? ' دقيقة' : m === 2 ? ' دقيقتين' : m <= 10 ? ' دقائق' : ' دقيقة'));
+  return parts.length ? parts.join(' و') : 'دقيقة';
+}
 function renderClasses(){
-  var today = new Date().getDay();
-  var html = '';
-  for(var d = 0; d < 7; d++){
-    var s = SCHEDULE[d]; if(!s) continue;
-    html += '<div class="dayName" style="' + (d === today ? 'color:#f5f5f5' : '') + '">' + s.day + (d === today ? ' — اليوم' : '') + '</div>';
-    if(!s.items.length) html += '<div class="row"><span>لا دوام</span></div>';
-    for(var i = 0; i < s.items.length; i++)
-      html += '<div class="row' + (d === today ? ' today' : '') + '"><span>' + s.items[i][0] + '</span>' +
-              (s.items[i][1] ? '<span class="sub">' + s.items[i][1] + '</span>' : '') + '</div>';
+  var now = new Date();
+  var s = SCHEDULE[now.getDay()];
+  var cur = now.getHours()*60 + now.getMinutes();
+  var html = '<div class="dayName" style="color:#f5f5f5;font-size:19px;margin-top:2px">حصص اليوم — ' + s.day + '</div>';
+  if(!s.items.length){
+    html += '<div class="nextBox">اليوم ما في دوام</div>';
+  } else {
+    var nowIdx = -1, nextIdx = -1, i, p;
+    for(i = 0; i < s.items.length; i++){
+      p = PERIODS[i];
+      if(cur >= p[0] && cur < p[1]) nowIdx = i;
+      if(cur < p[0] && nextIdx < 0) nextIdx = i;
+    }
+    var box;
+    if(nowIdx >= 0) box = 'أنت بحصة ' + s.items[nowIdx] + '<br><span class="sub">باقي لها ' + fmtDur(PERIODS[nowIdx][1] - cur) + '</span>';
+    else if(nextIdx >= 0) box = (nextIdx === 0 ? 'أول حصة اليوم: ' : 'الحصة الجاية: ') + s.items[nextIdx] + '<br><span class="sub">بعد ' + fmtDur(PERIODS[nextIdx][0] - cur) + '</span>';
+    else box = 'خلص دوام اليوم';
+    html += '<div class="nextBox">' + box + '</div>';
+    for(var j = 0; j < s.items.length; j++){
+      var q = PERIODS[j];
+      html += '<div class="row' + (j === nowIdx ? ' now' : '') + '"><span>' + s.items[j] + '</span><span class="sub">' + fmtTime(q[0]) + ' – ' + fmtTime(q[1]) + '</span></div>';
+    }
   }
   $('pageClasses').innerHTML = html;
 }
+setInterval(renderClasses, 30000);
 
 /* ================= dock ================= */
 var dockApps = [];
