@@ -35,6 +35,7 @@
     padding:16px; text-align:center; gap:12px; overflow:hidden;
   }
   .stageBox img { max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; display:block; }
+  .stageBox iframe { width:100%; flex:1; border:none; border-radius:8px; background:#fff; }
   .stageText { font-size:20px; line-height:1.9; white-space:pre-wrap; }
   .stageEmpty { font-size:34px; opacity:.85; }
   .row {
@@ -42,8 +43,6 @@
     font-size:19px; display:flex; align-items:center; gap:10px; cursor:pointer; background:#000;
   }
   .row .sub { color:#9a9a9a; font-size:15px; margin-inline-start:auto; }
-  .row.today { border-color:#3a3a3a; }
-  .row.now { border-color:#f5f5f5; }
   .nextBox { border:none; border-radius:16px; padding:18px 16px; margin-bottom:14px; font-size:22px; line-height:1.7; text-align:center; }
   .nextBox .sub { color:#9a9a9a; font-size:17px; }
   .dayName { font-size:16px; color:#9a9a9a; margin:14px 2px 8px 2px; }
@@ -60,7 +59,7 @@
     border:none; border-radius:999px; padding:9px 28px;
     font-size:17px; font-family:'Thmanyah', serif; color:#f5f5f5; background:#000; cursor:pointer;
   }
-  .pill.dim { color:#9a9a9a; border-color:#1c1c1c; }
+  .pill.dim { color:#9a9a9a; }
   #bookCount { font-size:15px; color:#9a9a9a; }
   /* ===== player ===== */
   #playerBar {
@@ -139,15 +138,21 @@
         <div class="stageText" id="stageText"></div>
       </div>
     </div>
-    <!-- 1: حصصي -->
+    <!-- 1: الكتابة -->
+    <div class="page" id="pageText">
+      <div class="stageBox" id="replyBox">
+        <div class="stageText" id="replyText">لا ردود بعد.</div>
+      </div>
+    </div>
+    <!-- 2: حصصي -->
     <div class="page" id="pageClasses"></div>
-    <!-- 2: اليوم -->
+    <!-- 3: اليوم -->
     <div class="page" id="pageDay">
       <div class="cardText" id="dayCard">لا شيء بعد.</div>
     </div>
-    <!-- 3: الأغاني -->
+    <!-- 4: الأغاني -->
     <div class="page" id="pageMusic"></div>
-    <!-- 4: الكتاب -->
+    <!-- 5: الكتاب -->
     <div class="page" id="pageBook">
       <img id="bookImg" alt="">
       <div class="bookNav">
@@ -163,7 +168,7 @@
   </div>
 </div>
 
-<div id="dots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+<div id="dots"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <div id="playerBar">
   <span class="ctl" id="btnPrev">⏮</span>
@@ -246,16 +251,16 @@ function tick(){
 tick(); setInterval(tick, 10000);
 
 /* ================= pager ================= */
-var curPage = 0, NPAGES = 5;
+var curPage = 0, NPAGES = 6;
 function goPage(i){
   curPage = Math.max(0, Math.min(NPAGES - 1, i));
   $('pager').style.transform = 'translateX(' + (-curPage * 100) + '%)';
   var dots = $('dots').children;
   for(var k = 0; k < dots.length; k++) dots[k].className = (k === curPage ? 'on' : '');
-  document.body.className = (curPage === 4 ? 'bookmode' : '');
-  if(curPage === 1) renderClasses();
-  if(curPage === 3) renderMusic();
-  if(curPage === 4) renderBook();
+  document.body.className = (curPage === 5 ? 'bookmode' : '');
+  if(curPage === 2) renderClasses();
+  if(curPage === 4) renderMusic();
+  if(curPage === 5) renderBook();
 }
 var tx0 = 0;
 $('pagerWrap').addEventListener('touchstart', function(e){ tx0 = e.touches[0].clientX; }, {passive:true});
@@ -274,10 +279,32 @@ function setStage(kind, val, cap){
     stageImgAt = Date.now();
     box.innerHTML = '<img src="' + val + '"><div class="stageText" id="stageCap" style="font-size:16px"></div>';
     if(cap) $('stageCap').textContent = cap;
+  } else if(kind === 'html'){
+    stageImgAt = Date.now();
+    box.innerHTML = '';
+    var fr = document.createElement('iframe');
+    fr.setAttribute('sandbox', 'allow-scripts allow-modals allow-popups');
+    fr.srcdoc = val;
+    box.appendChild(fr);
+    var cd = document.createElement('div');
+    cd.className = 'stageText'; cd.id = 'stageCap'; cd.style.fontSize = '16px';
+    cd.textContent = cap || '';
+    box.appendChild(cd);
   } else {
     box.innerHTML = '<div class="stageText"></div>';
     box.firstChild.textContent = val;
   }
+}
+function setReply(t){
+  ls('replyText', t);
+  $('replyText').textContent = t;
+}
+function b64ToText(b64){
+  try {
+    var bin = atob(b64), bytes = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  } catch(e){ return ''; }
 }
 function setStageCaption(cap){
   var c = $('stageCap');
@@ -289,11 +316,12 @@ function setStageCaption(cap){
     if(s) setStage(s.kind, s.val, s.cap);
   } catch(e){}
   var day = ls('dayCard'); if(day) $('dayCard').textContent = day;
+  var rp = ls('replyText'); if(rp) $('replyText').textContent = rp;
 })();
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث فوري بلا إعادة بناء ===== */
-var PAGE_V = 9;
+var PAGE_V = 10;
 function checkUpdate(){
   fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
     if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
@@ -605,7 +633,7 @@ function handleChannelMessage(ev){
     bookId = parsed.book; bookPage = parsed.page;
     if(parsed.pages) bookPages = parsed.pages;
     ls('bookId', bookId); ls('bookPage', String(bookPage));
-    goPage(4); if(parsed.note) toast(parsed.note);
+    goPage(5); if(parsed.note) toast(parsed.note);
     return;
   }
   if(parsed && parsed.type === 'day'){
@@ -615,14 +643,28 @@ function handleChannelMessage(ev){
   }
   if(ev.attachment && ev.attachment.url){
     var url = ev.attachment.url;
+    var anm = ((ev.attachment.name || '') + ' ' + (ev.attachment.type || '')).toLowerCase();
+    var isHtml = anm.indexOf('.htm') >= 0 || anm.indexOf('text/html') >= 0;
+    if(isHtml){
+      if(hasBot()){
+        try { var loc2 = Bot.fetchToFile(url, 'stage'); var dd = loc2 ? Bot.readFileData(loc2) : '';
+          if(dd){ var b = dd.split('base64,')[1] || ''; var txt = b64ToText(b); if(txt){ setStage('html', txt, ev.title || ''); return; } }
+        } catch(e){}
+      } else {
+        fetch(url).then(function(r){ return r.text(); }).then(function(txt){ if(txt) setStage('html', txt, ev.title || ''); }).catch(function(){});
+        return;
+      }
+      setReply('وصل ملف HTML بس ما انعرض — ' + (ev.title || ''));
+      return;
+    }
     if(hasBot()){ try { var local = Bot.fetchToFile(url, 'stage'); if(local){ var d2 = Bot.readFileData(local); if(d2) url = d2; } } catch(e){} }
     setStage('img', url, ev.title || '');
     return;
   }
   if(m){
     var cur = null; try { cur = JSON.parse(ls('stage') || 'null'); } catch(e){}
-    if(cur && cur.kind === 'img' && (Date.now() - stageImgAt) < 30000) setStageCaption(m);
-    else setStage('text', m);
+    if(cur && (cur.kind === 'img' || cur.kind === 'html') && (Date.now() - stageImgAt) < 30000) setStageCaption(m);
+    else setReply(m);
   }
 }
 function pollChannel(){
