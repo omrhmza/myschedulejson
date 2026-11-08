@@ -5,5 +5,5 @@
     "updated": 1794094800,
     "text": "الأحد ٨ تشرين الثاني\nفحص الكتابة: ٨:٣٠ – ١٠:٠٠ صباحًا\nمن البداية إلى صفحة ١٤"
   },
-  "config": { "pollSecs": 5, "gateTimeoutSecs": 180, "blackout": true }
+  "config": { "pollSecs": 5, "gateTimeoutSecs": 180, "blackout": false }
 }
