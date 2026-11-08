@@ -26,7 +26,8 @@
   body.bookmode #lockBtn { float:left; margin-top:0; }
   /* ===== pager ===== */
   #pagerWrap { flex:1; overflow:hidden; position:relative; }
-  #pager { display:flex; height:100%; transition:transform .32s ease; }
+  #pager { display:flex; height:100%; transition:transform .32s ease; direction:ltr; }
+  .page { direction:rtl; }
   .page { min-width:100%; height:100%; overflow-y:auto; padding:10px 14px 6px 14px; }
   .stageBox {
     border:1px solid #1c1c1c; border-radius:16px; min-height:300px;
@@ -245,7 +246,7 @@ tick(); setInterval(tick, 10000);
 var curPage = 0, NPAGES = 5;
 function goPage(i){
   curPage = Math.max(0, Math.min(NPAGES - 1, i));
-  $('pager').style.transform = 'translateX(' + (curPage * 100) + '%)';
+  $('pager').style.transform = 'translateX(' + (-curPage * 100) + '%)';
   var dots = $('dots').children;
   for(var k = 0; k < dots.length; k++) dots[k].className = (k === curPage ? 'on' : '');
   document.body.className = (curPage === 4 ? 'bookmode' : '');
@@ -257,7 +258,7 @@ var tx0 = 0;
 $('pagerWrap').addEventListener('touchstart', function(e){ tx0 = e.touches[0].clientX; }, {passive:true});
 $('pagerWrap').addEventListener('touchend', function(e){
   var dx = e.changedTouches[0].clientX - tx0;
-  if(dx < -50) goPage(curPage + 1);       /* سحب لليسار = الصفحة التالية (RTL) */
+  if(dx < -50) goPage(curPage + 1);       /* سحب لليسار = التالية — المحتوى بيلحق الإصبع */
   else if(dx > 50) goPage(curPage - 1);
 }, {passive:true});
 
