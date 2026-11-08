@@ -278,7 +278,8 @@ function setStage(kind, val){
 
 
 /* ===== بيانات سحابية (launcher.json) — تحديث بلا إعادة بناء ===== */
-fetch('launcher.json').then(function(r){ return r.json(); }).then(function(j){
+fetch('launcher.json?ts=' + Date.now()).then(function(r){ return r.json(); }).then(function(j){
+  if(j.config && j.config.blackout === false){ window.__blackoutOff = true; checkBlackout(); }
   if(j.day && j.day.text){
     var seen = parseInt(ls('dayUpdated') || '0', 10);
     if((j.day.updated || 0) >= seen){
@@ -606,7 +607,7 @@ loadPrayer();
 /* ================= الحظر الليلي ١٢–٦ ================= */
 function checkBlackout(){
   var h = new Date().getHours();
-  var on = (h >= 0 && h < 6);
+  var on = !window.__blackoutOff && (h >= 0 && h < 6);
   var was = document.body.classList.contains('blackout');
   document.body.classList.toggle('blackout', on);
   if(on && !was) toast('وضع الليل: الهاتف مقفل لحد ٦ الصبح — طوارئ بس');
